@@ -10,9 +10,7 @@ function setUpPubNub() {
 
   pubnub.subscribe({
     channel : "dojochat",
-    message : function(m){
-      console.log(m);
-    },
+    message : receiveMessage,
     connect : function(channel) {
       pubnub.publish({
         channel : "dojochat",
@@ -33,6 +31,10 @@ function sendMessage() {
     message : myMessage
   });
   $("#message").val("");
+}
+
+function receiveMessage(message) {
+  $("#chat").append(message + "\n");
 }
 
 $(function() {
