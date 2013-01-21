@@ -22,7 +22,21 @@ function setUpPubNub() {
   });
 }
 
+function setUpSendButton() {
+  $("#send").click(sendMessage);
+}
+
+function sendMessage() {
+  var myMessage = $("#message").val();
+  pubnub.publish({
+    channel : "dojochat",
+    message : myMessage
+  });
+  $("#message").val("");
+}
+
 $(function() {
   setUpPubNub();
+  setUpSendButton();
 });
 
