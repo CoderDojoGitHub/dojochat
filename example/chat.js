@@ -2,19 +2,21 @@
 
 var pubnub;
 
-function setUpPubNub() {
+function connectToPubNub() {
   pubnub = PUBNUB.init({
     publish_key   : "PUBLISH_KEY",
     subscribe_key : "SUBSCRIBE_KEY"
   });
+}
 
+function listenToChatChannel() {
   pubnub.subscribe({
     channel : "dojochat",
     message : receiveMessage,
     connect : function(channel) {
       pubnub.publish({
         channel : "dojochat",
-        message : "Hi"
+        message : "A wild chatter appeared!"
       });
     }
   });
@@ -38,7 +40,8 @@ function receiveMessage(message) {
 }
 
 $(function() {
-  setUpPubNub();
+  connectToPubNub();
+  listenToChatChannel();
   setUpSendButton();
 });
 
