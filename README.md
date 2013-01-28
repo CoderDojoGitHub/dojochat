@@ -74,3 +74,40 @@ if it goes through Arkansas or Illinois. You just hand the letter to your
 postman, and he promises it will arrive safely. So when we want to send
 something to Google at `173.194.46.0`, we hand the addressed message to our
 router and it passes it along wherever it needs to go.
+
+If you do want to see the path your message takes, you can check it out in your
+terminal:
+
+    $ traceroute 173.194.46.0
+    traceroute to 173.194.46.0 (173.194.46.0), 64 hops max, 52 byte packets
+     1  homeportal (192.168.1.254)  487.005 ms  274.202 ms  333.592 ms
+     2  76-218-68-2.lightspeed.sntcca.sbcglobal.net (76.218.68.2)  946.502 ms  203.002 ms  63.178 ms
+     3  71.145.0.144 (71.145.0.144)  204.815 ms  147.880 ms  179.078 ms
+     4  * * *
+     5  * * *
+     6  12.83.39.145 (12.83.39.145)  26.235 ms
+        12.83.39.137 (12.83.39.137)  28.148 ms  24.364 ms
+     7  12.122.114.21 (12.122.114.21)  79.211 ms  25.422 ms  25.751 ms
+     8  12.249.231.14 (12.249.231.14)  72.722 ms *  70.846 ms
+     9  209.85.249.3 (209.85.249.3)  26.680 ms
+        209.85.249.5 (209.85.249.5)  27.040 ms  27.016 ms
+    10  209.85.250.63 (209.85.250.63)  30.497 ms  27.746 ms
+        209.85.250.64 (209.85.250.64)  35.129 ms
+    11  64.233.174.204 (64.233.174.204)  36.443 ms  35.323 ms
+        64.233.174.206 (64.233.174.206)  35.944 ms
+    12  64.233.174.143 (64.233.174.143)  72.535 ms  70.256 ms
+        64.233.174.141 (64.233.174.141)  69.641 ms
+    13  72.14.237.220 (72.14.237.220)  77.694 ms
+        72.14.237.216 (72.14.237.216)  70.355 ms
+        72.14.237.220 (72.14.237.220)  71.405 ms
+    14  209.85.240.79 (209.85.240.79)  69.778 ms  70.002 ms  69.205 ms
+    15  * dfw06s27-in-f0.1e100.net (173.194.46.0)  72.253 ms  70.288 ms
+
+So you can see it takes 15 steps for me to send something to Google. Some of the
+steps (6 and 9-13) even have a few options to pick from, so our messages could
+get to Google several different ways, like how you can drive from San Francisco
+to Palo Alto on Highway 101 or Highway 280. One of the ways might be faster, so
+you and the internet will pick that one, but if something goes wrong like
+there's a big crash on 101, you can take a different route and still get there.
+Computers crash too, so the internet was built to automatically use the best
+route and switch to a new one of something goes wrong.
