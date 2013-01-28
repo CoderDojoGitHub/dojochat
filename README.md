@@ -111,3 +111,184 @@ you and the internet will pick that one, but if something goes wrong like
 there's a big crash on 101, you can take a different route and still get there.
 Computers crash too, so the internet was built to automatically use the best
 route and switch to a new one of something goes wrong.
+
+## Let's Build a Chatroom!
+
+### Download the starter files
+
+Some files to start from are set up here:
+
+* [https://github.com/kristjan/dojochat/archive/master.zip](https://github.com/kristjan/dojochat/archive/master.zip)
+
+Download them and unzip them wherever you'd like to work. Then open up the
+`html` file. It should just be a black page with the **DojoChat** header. You'll
+also want to open the browser's JavaScript console so you can see if there are
+any errors or useful pieces of information being printed out. Here's how to open
+it in any common browser:
+
+* [http://webmasters.stackexchange.com/questions/8525/how-to-open-the-javascript-console-in-different-browsers](http://webmasters.stackexchange.com/questions/8525/how-to-open-the-javascript-console-in-different-browsers)
+
+With the console open, you should see it print `Hi!` as soon as you load the
+page.
+
+The download also contains an `example/` directory that you can look at whenever
+you get curious or confused.
+
+### Build the room
+
+We'll need an interface to chat through, which at bare minimum needs a place to
+type your message and a place to see everyone else's. Add this in `chat.html`
+where it says `Put your HTML here`:
+
+    <textarea id="chat"></textarea>
+    <form action="#">
+      <input type="text" id="message" />
+      <button id="send">Send</button>
+    </form>
+
+The `textarea` will be where we print everything people are saying, and the
+`form` is where we'll type our own messages. Neither of these will do anything
+until we set up the JavaScript.
+
+### Connect to PubNub
+
+PubNub is a handy service that lets us send and receive data really easily.
+Connecting to a channel on PubNub is like walking into a classroom or calling
+into a conference call - you'll be able to see everything people are sending
+into the channel, as well as send your own messages. Open up `chat.js` and add
+this to the top:
+
+    var pubnub;
+
+    function setUpPubNub() {
+      pubnub = PUBNUB.init({
+        publish_key   : "PUBLISH_KEY",
+        subscribe_key : "SUBSCRIBE_KEY"
+      });
+    }
+
+Then where it says `Code you type here will run when the page loads`, call the
+function we just defined.
+
+    $(function() {
+      // Code you type here will run when the page loads.
+      setUpPubNub();
+    });
+
+Nothing obvious will happen yet, that's coming up next.
+
+### Receive messages
+
+Let's start listening to the chat channel and printing it in our window.  First,
+define the function that will add text to the chat box.
+
+    function receiveMessage(message) {
+      $("#chat").append(message + "\n");
+    }
+
+This looks up an HTML tag on the page with an `id` named `chat` (which we added
+earlier) and adds text to the end of it. the `\n` is a special character called
+a "new line" that acts like hitting enter on your keyboard. It just makes sure
+the messages don't all run together, but get printed on separate lines like you
+would expect.
+
+You can try calling it from your JavaScript console to make sure it works:
+
+    > receiveMessage("Message received!");
+
+If that doesn't add text to your page, something is wrong. Make sure you refresh
+the page so you get the new code we've added.
+
+### Listen to the chatroom
+
+Now we'll use our `receiveMessage` function to listen to the chat channel.
+Define a function that connects to PubNub:
+
+    function listenToChatChannel() {
+      pubnub.subscribe({
+        channel : "dojochat",
+        message : receiveMessage,
+        connect : function(channel) {
+          pubnub.publish({
+            channel : "dojochat",
+            message : "<PUT YOUR NAME HERE> appeared!"
+          });
+        }
+      });
+    }
+
+When we call this code, it will subscribe us to the chat room. There are three
+things going on here:
+
+* `channel` sets the channel we're going to listen to, like picking a channel on
+  your TV. We've called our channel `"dojochat"`.
+* `message` sets the function that gets called every time something is received
+  on the channel. We want to call `receiveMessage` so that the message will get
+  printed on our page.
+* `connect` lets us run some code once we've connected to the chatroom. We're
+  going to `publish` a new message to the `dojochat` channel that you just
+  joined the room.
+
+Call this function from the code that runs when the page loads:
+
+    $(function() {
+      connectToPubNub();
+      listenToChatChannel(); // ADD THIS LINE
+    });
+
+### Start talking!
+
+The last bit we need is just to send our messages over when we type them in our
+message box. Define a new function that grabs what we've typed and publishes it
+to our channel:
+
+    function sendMessage() {
+      var myMessage = $("#message").val();
+      pubnub.publish({
+        channel : "dojochat",
+        message : myMessage
+      });
+      $("#message").val("");
+    }
+
+Whenever this is called, three things happen:
+
+1. We extract `myMessage` from the message box. See how we find that by its
+   `id`, the same way we did with the `#chat` box? Calling `val()` on it gets
+   out the value you've typed in the field.
+2. We publish it to the `coderdojo` channel, the same way we did when we
+   announced we'd joined the room.
+3. We set the message box's `val` to an empty string, which clears it out so you
+   can type something new. See how when you call `val()` without an argument, it
+   returns what's there, but when you give it an argument (`val("")`), it sets
+   it?
+
+Now add one last line to the code that runs when the page loads:
+
+    $(function() {
+      connectToPubNub();
+      listenToChatChannel();
+      $("#send").click(sendMessage); // ADD THIS LINE
+    });
+
+That tells the send button we wrote earlier (with `id="send"`) that every time
+it gets clicked, it should call the `sendMessage` function.
+
+Try it out! You should have a fully functioning chat room, and as other students
+get theirs working, you can all start to talk!
+
+## Extra Credit
+
+When you're done, here are some ideas to keep working on:
+
+* Add your name to all the messages you're sending, so people know who's saying
+  what. You could just add it to the code, or you could put another text field
+  on the page where you can type any name you want to be known by.
+* Make your messages look different than everyone else's. If there are a lot of
+  people in the room, it's easy to get lost in the text. At least if your
+  messages look different, you can see how much has happened since you last said
+  something.
+* Show a list of people in the room. This will need everyone to coordinate
+  somehow by sending over their names when then join. To start, you might be
+  able to watch for messages like `"Someone appeared!"` and remember that
+  `Someone` is here.
