@@ -25,11 +25,12 @@ function listenToChatChannel() {
   });
 }
 
-function setUpSendButton() {
-  $("#send").click(sendMessage);
+function setUpMessageSending() {
+  $("#message-form").submit(sendMessage);
 }
 
-function sendMessage() {
+function sendMessage(event) {
+  event.preventDefault();
   var myMessage = $("#message").val();
   pubnub.publish({
     channel : "dojochat",
@@ -45,6 +46,6 @@ function receiveMessage(message) {
 $(function() {
   connectToPubNub();
   listenToChatChannel();
-  setUpSendButton();
+  setUpMessageSending();
 });
 
