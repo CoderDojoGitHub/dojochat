@@ -134,22 +134,6 @@ page.
 The download also contains an `example/` directory that you can look at whenever
 you get curious or confused.
 
-### Build the room
-
-We'll need an interface to chat through, which at bare minimum needs a place to
-type your message and a place to see everyone else's. Add this in `chat.html`
-where it says `Put your HTML here`:
-
-    <textarea id="chat"></textarea>
-    <form action="#">
-      <input type="text" id="message" />
-      <button id="send">Send</button>
-    </form>
-
-The `textarea` will be where we print everything people are saying, and the
-`form` is where we'll type our own messages. Neither of these will do anything
-until we set up the JavaScript.
-
 ### Connect to PubNub
 
 PubNub is a handy service that lets us send and receive data really easily.
