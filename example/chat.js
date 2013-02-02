@@ -1,11 +1,14 @@
 /*global PUBNUB:true*/
 
+var PUBLISH_KEY   = "PUBLISH_KEY";
+var SUBSCRIBE_KEY = "SUBSCRIBE_KEY";
+
 var pubnub;
 
 function connectToPubNub() {
   pubnub = PUBNUB.init({
-    publish_key   : "PUBLISH_KEY",
-    subscribe_key : "SUBSCRIBE_KEY"
+    publish_key   : PUBLISH_KEY,
+    subscribe_key : SUBSCRIBE_KEY
   });
 }
 
