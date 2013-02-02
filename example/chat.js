@@ -29,8 +29,7 @@ function setUpMessageSending() {
   $("#message-form").submit(sendMessage);
 }
 
-function sendMessage(event) {
-  event.preventDefault();
+function sendMessage() {
   var myMessage = $("#message").val();
   pubnub.publish({
     channel : "dojochat",
